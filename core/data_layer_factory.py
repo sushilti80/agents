@@ -161,7 +161,7 @@ def register_qdrant_data_layer():
     Use this directly with @cl.data_layer decorator:
     
     Example:
-        from agent_core.data_layer_factory import register_qdrant_data_layer
+        from core.data_layer_factory import register_qdrant_data_layer
         
         @cl.data_layer
         def get_data_layer():

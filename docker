@@ -1,0 +1,43 @@
+# Stage 1 omitted for brevity — single-stage works fine
+
+FROM python:3.11-slim
+WORKDIR /app
+
+# Node
+RUN apt-get update && apt-get install -y curl \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# ---- Install MCP deps LOCALLY (preferred) ----
+WORKDIR /opt/mcp
+RUN npm init -y \
+    && npm install @modelcontextprotocol/sdk @modelcontextprotocol/server-sequential-thinking
+ENV PATH=/opt/mcp/node_modules/.bin:$PATH
+
+# ---- Python deps ----
+WORKDIR /app
+COPY requirements.txt .
+RUN python -m pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# ---- App files ----
+COPY agent.py .
+COPY platform_architect_instructions.txt .
+
+# Chainlit config + logs
+# RUN mkdir -p /app/.chainlit \
+#     && echo "[project]\nuser_env = []\nsession_timeout = 3600\nuser_session_timeout = 1296000\ncache = false\n[pseudo]\n" > /app/.chainlit/config.toml \
+#     && mkdir -p /app/logs
+
+RUN mkdir -p /app/.chainlit /app/logs
+COPY chainlit.md /app/chainlit.md
+
+ENV PYTHONUNBUFFERED=1
+ENV CHAINLIT_HOST=0.0.0.0
+ENV CHAINLIT_PORT=8000
+EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["chainlit", "run", "daedalus.py", "--host", "0.0.0.0", "--port", "8000", "--headless"]

@@ -1,7 +1,7 @@
 """
 Phase 4 Test Suite: SSO Integration Testing
 
-Tests for agent_core modules (OAuth, DataLayer, ThreadResume, QdrantMonitor)
+Tests for core modules (OAuth, DataLayer, ThreadResume, QdrantMonitor)
 and their integration in agent_sso.py and daedalus.py.
 
 Run with:
@@ -18,10 +18,10 @@ from typing import Dict, Any
 # Add agent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from agent_core.oauth_handler import OAuthHandler
-from agent_core.data_layer_factory import DataLayerFactory
-from agent_core.thread_resume_handler import ThreadResumeHandler
-from agent_core.qdrant_monitor import QdrantMonitor
+from core.oauth_handler import OAuthHandler
+from core.data_layer_factory import DataLayerFactory
+from core.thread_resume_handler import ThreadResumeHandler
+from core.qdrant_monitor import QdrantMonitor
 
 
 class TestOAuthHandler:

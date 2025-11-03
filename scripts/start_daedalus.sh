@@ -1,7 +1,12 @@
 #!/bin/bash
-# Quick start script for Daedalus Agent
+# Quick start script for Daedalus Agent in Pantheon
 
-echo "🚀 Starting Daedalus Agent..."
+echo "🏛️ Pantheon - Starting Daedalus Agent..."
+
+# Get script directory and navigate to project root
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
+cd "$PROJECT_ROOT"
 
 # Check if virtual environment exists
 if [ ! -d "venv" ]; then
@@ -22,6 +27,6 @@ if [ ! -f ".env" ]; then
     exit 1
 fi
 
-# Start Chainlit
-echo "Starting Chainlit on http://localhost:8000"
-chainlit run daedalus.py -w
+# Start Chainlit with Daedalus
+echo "Starting Daedalus on http://localhost:8000"
+chainlit run agents/daedalus/main.py -w

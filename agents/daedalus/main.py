@@ -12,8 +12,8 @@ from chainlit.types import ThreadDict
 from dotenv import load_dotenv
 from shared.vector_memory import create_vector_memory_manager
 
-# Import from agent_core library
-from agent_core import (
+# Import from core library (renamed from agent_core)
+from core import (
     AgentMode,
     AgentConfig,
     SessionConfig,
@@ -25,11 +25,11 @@ from agent_core import (
     setup_logging
 )
 
-# Import SSO/OAuth components from agent_core
-from agent_core.oauth_handler import OAuthHandler
-from agent_core.data_layer_factory import DataLayerFactory
-from agent_core.thread_resume_handler import ThreadResumeHandler
-from agent_core.qdrant_monitor import QdrantMonitor
+# Import SSO/OAuth components from core
+from core.oauth_handler import OAuthHandler
+from core.data_layer_factory import DataLayerFactory
+from core.thread_resume_handler import ThreadResumeHandler
+from core.qdrant_monitor import QdrantMonitor
 
 load_dotenv()
 
@@ -41,13 +41,13 @@ load_dotenv()
 AGENT_MODES = {
     "platform": AgentMode(
         name="Platform Architect",
-        file="platform_architect_instructions.txt",
+        file="instructions/platform_architect_instructions.txt",
         emoji="🏗️",
         description="Azure Platform Architect with Aya Service Catalog"
     ),
     "cloud": AgentMode(
         name="MS Cloud Architect",
-        file="ms_cloud_architect_instructions.txt",
+        file="instructions/ms_cloud_architect_instructions.txt",
         emoji="☁️",
         description="Microsoft Cloud Solutions across Azure, M365, Power Platform"
     )

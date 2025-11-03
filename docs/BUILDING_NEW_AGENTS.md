@@ -1,6 +1,6 @@
-# Building New Agents with agent_core Library
+# Building New Agents with Pantheon Framework
 
-This guide shows you how to create new agents using the reusable `agent_core` library. You can either create a standalone agent file or add modes to existing multi-mode agents like `daedalus.py`.
+This guide shows you how to create new agents using the reusable `core` library in the Pantheon multi-agent system. You can either create a standalone agent or add modes to existing multi-mode agents like Daedalus.
 
 ## 📚 Table of Contents
 
@@ -16,15 +16,15 @@ This guide shows you how to create new agents using the reusable `agent_core` li
 
 ### Prerequisites
 
-- ✅ `agent_core/` library installed
+- ✅ `core/` library installed (renamed from agent_core)
 - ✅ `shared/` utilities available (vector_memory, qdrant_data_layer)
 - ✅ Azure OpenAI credentials configured
 - ✅ Qdrant running (for conversation memory)
 
-### What agent_core Provides
+### What core Provides
 
 ```python
-from agent_core import (
+from core import (
     # Configuration
     AgentConfig, AgentMode, SessionConfig, CommandConfig,
     
@@ -56,12 +56,12 @@ Create a new single-purpose agent from scratch.
 
 ### Step 1: Create Agent File
 
-**File:** `my_agent.py`
+**File:** `agents/my_agent/main.py`
 
 ```python
 """
 My Custom Agent - Description of what this agent does
-Built using agent_core library for SSO, session management, and RAG
+Built using Pantheon core library for SSO, session management, and RAG
 """
 import logging
 from pathlib import Path
@@ -72,8 +72,8 @@ from chainlit.types import ThreadDict
 from dotenv import load_dotenv
 from shared.vector_memory import create_vector_memory_manager
 
-# Import from agent_core library
-from agent_core import (
+# Import from core library
+from core import (
     AgentMode,
     AgentConfig,
     SessionConfig,
@@ -121,7 +121,7 @@ MY_AGENT_CONFIG = AgentConfig(
         session_info="/session",
         resume="/resume"
     ),
-    instruction_base_dir=str(Path(__file__).parent),
+    instruction_base_dir=str(Path(__file__).parent / "instructions"),
     log_file="my_agent.log",
     temperature=0.2
 )
@@ -410,7 +410,7 @@ async def handle_message(message: cl.Message):
 
 ### Step 2: Create Instruction File
 
-**File:** `my_agent_instructions.txt`
+**File:** `agents/my_agent/instructions/default_instructions.txt`
 
 ```
 You are MyAgent, a helpful AI assistant specialized in [your domain].
@@ -431,19 +431,30 @@ Always maintain a professional and friendly tone.
 
 ### Step 3: Run Your Agent
 
+Using the Pantheon launcher:
 ```bash
-chainlit run my_agent.py
+python launcher.py launch my_agent
+```
+
+Or directly with Chainlit:
+```bash
+chainlit run agents/my_agent/main.py
+```
+
+Or using the convenience script:
+```bash
+bash scripts/start_my_agent.sh
 ```
 
 ---
 
 ## 🔄 Approach 2: Add Mode to Existing Agent
 
-Add a new mode to an existing multi-mode agent like `daedalus.py`.
+Add a new mode to an existing multi-mode agent like Daedalus.
 
 ### Step 1: Create Instruction File
 
-**File:** `kubernetes_architect_instructions.txt`
+**File:** `agents/daedalus/instructions/kubernetes_architect_instructions.txt`
 
 ```
 You are a Kubernetes Architecture Specialist.
@@ -464,7 +475,7 @@ Guidelines:
 
 ### Step 2: Update Agent Configuration
 
-**Edit:** `daedalus.py`
+**Edit:** `agents/daedalus/main.py`
 
 ```python
 # Define agent modes
@@ -513,8 +524,9 @@ async def handle_message(message: cl.Message):
 
 ### Step 4: Test New Mode
 
+Using the Pantheon launcher:
 ```bash
-chainlit run daedalus.py
+python launcher.py launch daedalus --mode kubernetes
 
 # In chat:
 /kubernetes
@@ -808,19 +820,26 @@ LOG_LEVEL=INFO
 ### File Structure
 
 ```
-agent/
-├── agent_core/           # Reusable library
-├── shared/               # Shared utilities
+pantheon/
+├── core/                        # Reusable library (formerly agent_core)
+├── shared/                      # Shared utilities
 │   ├── vector_memory.py
 │   └── qdrant_data_layer.py
-├── my_agent.py          # Your new agent
-├── my_agent_instructions.txt
-├── my_agent.log         # Generated logs
-└── .env                 # Configuration
+├── agents/
+│   └── my_agent/               # Your new agent
+│       ├── main.py
+│       ├── instructions/
+│       │   └── default_instructions.txt
+│       └── README.md
+├── scripts/
+│   └── start_my_agent.sh       # Convenience launcher
+├── launcher.py                  # Multi-agent launcher
+└── .env                         # Configuration
 ```
 
 ---
 
 **Created:** 2025-11-01  
-**Version:** 1.0.0  
-**Compatible with:** agent_core v1.1.0+
+**Updated:** 2025-11-03 (Pantheon restructure)  
+**Version:** 2.0.0  
+**Compatible with:** Pantheon core v1.1.0+
