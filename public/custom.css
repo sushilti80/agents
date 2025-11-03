@@ -1,0 +1,69 @@
+/* Custom styles for Chainlit UI */
+
+/* ============================================
+   LOGIN PAGE CUSTOMIZATION
+   ============================================ */
+
+/* Hide default Chainlit logo on login page */
+.login-page img[alt*="logo"],
+.login-page img[alt*="Logo"],
+.login-page img[alt*="Chainlit"],
+[class*="login"] img[alt*="logo"],
+[class*="Login"] img[alt*="logo"] {
+    content: url('/public/logo.png') !important;
+    max-width: 200px !important;
+    height: auto !important;
+}
+
+/* Alternative: Replace logo using CSS background */
+.MuiBox-root img[alt="Logo"],
+div[class*="loginPage"] img[alt="Logo"],
+div[class*="LoginPage"] img[alt="Logo"] {
+    content: url('/public/logo.png') !important;
+    max-width: 200px !important;
+    height: auto !important;
+}
+
+/* Target the logo container directly */
+#root img[alt="Logo"] {
+    content: url('/public/logo.png') !important;
+    max-width: 200px !important;
+    height: auto !important;
+}
+
+/* Most aggressive - replace ANY img with alt containing Logo */
+img[alt*="Logo"]:not([alt*="user"]):not([alt*="avatar"]) {
+    content: url('/public/logo.png') !important;
+    max-width: 200px !important;
+    height: auto !important;
+}
+
+/* ============================================
+   CHAT UI CUSTOMIZATION
+   ============================================ */
+
+/* Change message input bar from blue to neutral color */
+.MuiInputBase-root {
+    background-color: #f5f5f5 !important; /* Light gray */
+    border-color: #d0d0d0 !important;
+}
+
+/* Message input field focus state */
+.MuiInputBase-root:focus-within {
+    border-color: #0078d4 !important; /* Microsoft Blue on focus */
+    background-color: white !important;
+}
+
+/* Send button color (optional - change from blue) */
+button[type="submit"] {
+    background-color: #0078d4 !important; /* Microsoft Blue */
+}
+
+button[type="submit"]:hover {
+    background-color: #005a9e !important;
+}
+
+/* Remove blue background from message composer */
+.message-composer {
+    background-color: transparent !important;
+}
