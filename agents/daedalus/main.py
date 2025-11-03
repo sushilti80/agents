@@ -4,8 +4,14 @@ Refactored to use agent_core library for reusability
 Now with SSO support!
 """
 import logging
+import sys
 from pathlib import Path
 from typing import Optional
+
+# Add project root to Python path for imports
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import chainlit as cl
 from chainlit.types import ThreadDict

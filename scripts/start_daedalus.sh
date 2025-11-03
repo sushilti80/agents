@@ -17,6 +17,9 @@ fi
 # Activate virtual environment
 source venv/bin/activate
 
+# Set PYTHONPATH to project root for imports
+export PYTHONPATH="$PROJECT_ROOT"
+
 # Install dependencies
 pip install -r requirements.txt
 
@@ -29,4 +32,4 @@ fi
 
 # Start Chainlit with Daedalus
 echo "Starting Daedalus on http://localhost:8000"
-chainlit run agents/daedalus/main.py -w
+chainlit run agents/daedalus/main.py

@@ -113,8 +113,14 @@ cat > "$AGENT_DIR/main.py" << 'EOFMAIN'
 Part of the Pantheon multi-agent system
 """
 import logging
+import sys
 from pathlib import Path
 from typing import Optional
+
+# Add project root to Python path for imports
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import chainlit as cl
 from chainlit.types import ThreadDict
@@ -412,6 +418,49 @@ EOF
 
 print_success "Test file created"
 
+# Create startup script
+print_info "Creating startup script..."
+cat > "$PROJECT_ROOT/scripts/start_$AGENT_NAME.sh" << EOF
+#!/bin/bash
+# Quick start script for $AGENT_CLASS_NAME in Pantheon
+
+echo "🏛️ Pantheon - Starting $AGENT_CLASS_NAME..."
+
+# Get script directory and navigate to project root
+SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="\$( cd "\$SCRIPT_DIR/.." && pwd )"
+cd "\$PROJECT_ROOT"
+
+# Check if virtual environment exists
+if [ ! -d "venv" ]; then
+    echo "Creating virtual environment..."
+    python3 -m venv venv
+fi
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Set PYTHONPATH to project root for imports
+export PYTHONPATH="\$PROJECT_ROOT"
+
+# Install dependencies
+pip install -r requirements.txt -q
+
+# Check if .env exists
+if [ ! -f ".env" ]; then
+    echo "⚠️  No .env file found!"
+    echo "Please create .env from .env.example and configure your credentials."
+    exit 1
+fi
+
+# Start Chainlit with $AGENT_CLASS_NAME (without -w flag to avoid reload loops)
+echo "Starting $AGENT_CLASS_NAME on http://localhost:8000"
+chainlit run agents/$AGENT_NAME/main.py
+EOF
+
+chmod +x "$PROJECT_ROOT/scripts/start_$AGENT_NAME.sh"
+print_success "Startup script created"
+
 # Create .gitkeep files
 touch "$AGENT_DIR/mcp_tools/.gitkeep"
 touch "$AGENT_DIR/templates/.gitkeep"
@@ -424,6 +473,7 @@ echo "  ✓ agents/$AGENT_NAME/__init__.py"
 echo "  ✓ agents/$AGENT_NAME/main.py"
 echo "  ✓ agents/$AGENT_NAME/README.md"
 echo "  ✓ agents/$AGENT_NAME/instructions/default_instructions.txt"
+echo "  ✓ scripts/start_$AGENT_NAME.sh"
 echo "  ✓ tests/unit/test_agents/test_$AGENT_NAME/test_main.py"
 echo ""
 echo "📝 Next steps:"
@@ -444,6 +494,8 @@ echo "       \"port\": 8001"
 echo "   }"
 echo ""
 echo "3. Test the agent:"
+echo "   bash scripts/start_$AGENT_NAME.sh"
+echo "   OR"
 echo "   python launcher.py $AGENT_NAME"
 echo ""
 echo "4. Write tests:"

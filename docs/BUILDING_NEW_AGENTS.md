@@ -64,8 +64,14 @@ My Custom Agent - Description of what this agent does
 Built using Pantheon core library for SSO, session management, and RAG
 """
 import logging
+import sys
 from pathlib import Path
 from typing import Optional
+
+# Add project root to Python path for imports
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import chainlit as cl
 from chainlit.types import ThreadDict
@@ -445,6 +451,8 @@ Or using the convenience script:
 ```bash
 bash scripts/start_my_agent.sh
 ```
+
+> **Note:** Avoid using the `-w` (watch) flag with Chainlit as it can cause infinite reload loops when dependencies change in the `venv` directory. The agent will work fine without auto-reload.
 
 ---
 
